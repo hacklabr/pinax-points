@@ -1,7 +1,7 @@
-import datetime
 import itertools
 
 from django.conf import settings
+from django.utils import timezone
 from django.contrib.auth import get_user_model
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -56,7 +56,7 @@ class AwardedPointValue(models.Model):
     source_object_id = models.IntegerField(null=True)
     source_object = GenericForeignKey("source_content_type", "source_object_id")
 
-    timestamp = models.DateTimeField(default=datetime.datetime.now)
+    timestamp = models.DateTimeField(default=timezone.now)
 
     @classmethod
     def points_awarded(cls, **lookup_params):
@@ -273,7 +273,7 @@ def fetch_top_objects(model, time_limit):
         else:
             raise NotImplementedError("Only auth.User is supported at this time.")
     else:
-        since = datetime.datetime.now() - time_limit
+        since = timezone.now() - time_limit
         if issubclass(model, get_user_model()):
             queryset = queryset.filter(
                 awardedpointvalue_targets__timestamp__gte=since
